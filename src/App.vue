@@ -1,18 +1,19 @@
 <template>
   <canvas ref="canvas" width="2" height="2" class="absolute top-0 left-0 w-full h-full"></canvas>
-    <div class="wrapper absolute z-2 top-0 w-full h-full flex 800:flex-col">
+    <div class="wrapper absolute z-2 top-0 w-full h-auto min-h-screen flex 800:flex-col">
       <div class="bg-[rgba(0,0,0,.3)] flex-1 max-w-[350px] hover:bg!-[rgba(0,0,0,.35)] transition-all 800:max-w-full 800:py-20">
         <GitProfile
           :data="profileData"
         />
       </div>
-      <div class=" flex-1 bg-black p-20 text-white 1230:flex 1230:flex-col 1230:items-center">
-        <div class="title text-5xl font-bold mb-20 select-none 800:mb-10">Repositories</div>
+      <div class="repos flex-1 bg-black p-20 text-white 1230:flex 1230:flex-col 1230:items-center 800:px-0">
+        <div class="title text-5xl font-bold mb-20 select-none 800:mb-10">My repositories</div>
         <div class="title text-3xl font-bold font-['Poppins'] my-10 select-none">Personal</div>
         <reposList
           :data="reposData"
+          class="flowed"
         />
-        <a href="http://www.s1kebeats.store" target="_blank" rel="noopener noreferrer">
+        <a href="http://www.s1kebeats.store" title="Visit s1kebeats.store" target="_blank" rel="noopener noreferrer">
           <div class="title flex my-10 items-center gap-3 1230:items-center">
             <img src="@/assets/images/logo.svg" class="w-[34px] h-[34px] rounded-sm">
             <div class="text-3xl font-bold font-['Poppins']">s1kebeats</div>
@@ -24,7 +25,9 @@
       </div>
     </div>
   <transition name="overlay">
-    <div v-show="loading" class="absolute z-5 top-0 left-0 w-full h-full bg-black flex items-center justify-center text-white">Loading</div>
+    <div v-show="loading" class="absolute z-5 top-0 left-0 w-full h-full bg-black flex items-center justify-center text-white">
+      <div class="sp sp-circle" v-show="loading"></div>
+    </div>
   </transition>
 </template>
 
@@ -83,12 +86,12 @@ const reposUrl = ref(`https://api.github.com/users/${USER_LOGIN}/repos`)
 onMounted(() => {
   Promise.all([
     fetch(reposUrl.value).then(response => response.json()).then(data => {Object.assign(reposData, data)}),
-    fetch(profileUrl.value).then(response => response.json()).then(data => {Object.assign(profileData, data)}),
+    fetch(profileUrl.value).then(response => response.json()).then(data => {Object.assign(profileData, data); document.title = profileData.name}),
     fetch(orgUrl.value).then(response => response.json()).then(data => {Object.assign(orgData, data)}),
   ]).then(() => setTimeout(() => loading.value = false, 250))
-
+  
   ctx.value = canvas.value.getContext('2d');
-  animate();
+  animate()
 })
 </script>
 
@@ -99,19 +102,28 @@ onMounted(() => {
 #app {
   background-color: black;
 }
-// .wrapper {
-//   background-image: linear-gradient(87deg, rgba(0,0,0,0) 0%, rgb(0, 0, 0,.98) 30%, rgba(0,0,0,.98) 10%);
-//   background-size: cover;
-// }
 
 @media screen and (max-width: 1230px) {
     .title {
         width: 350px;
     }
+    .repos {
+      max-height: 100vh;
+    }
+    .flowed {
+      overflow-y: scroll;
+    }
 }
 @media screen and (max-width: 800px) {
     .title {
         width: 300px;
+    }
+    .repos {
+      padding: 0;
+      max-height: none;
+    }
+    .flowed {
+      height: 250px;
     }
 }
 
@@ -122,5 +134,26 @@ onMounted(() => {
 .overlay-enter-from,
 .overlay-leave-to {
   opacity: 0;
+}
+
+.sp {
+	width: 32px;
+	height: 32px;
+	clear: both;
+	margin: 20px auto;
+}
+
+
+/* Spinner Circle Rotation */
+.sp-circle {
+	border: 2px rgba(white,0.25) solid;
+	border-top: 2px rgba(white,1) solid;
+	border-radius: 50%;
+	-webkit-animation: spCircRot .7s infinite linear;
+	animation: spCircRot .7s infinite linear;
+}
+@keyframes spCircRot {
+	from { transform: rotate(0deg); }
+	to { transform: rotate(359deg); }
 }
 </style>
