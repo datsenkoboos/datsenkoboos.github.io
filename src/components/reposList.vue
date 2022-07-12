@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full flex gap-5 flex-wrap">
+    <div class="list w-full flex gap-5 flex-wrap">
         <GitCard v-for="repo in data" :key="repo.id" :data="repo" />
     </div>
 </template>
@@ -13,5 +13,9 @@ const props = defineProps({
 </script>
 
 <style lang="scss">
-    
+@media screen and (max-width: 1230px) {
+    .list {
+        justify-content: center;
+    }
+}
 </style>

@@ -1,19 +1,19 @@
 <template>
   <canvas ref="canvas" width="2" height="2" class="absolute top-0 left-0 w-full h-full"></canvas>
-    <div class="wrapper absolute z-2 top-0 w-full h-full flex">
-      <div class="bg-[rgba(0,0,0,.3)] flex-1 max-w-[350px] hover:bg!-[rgba(0,0,0,.35)] transition-all">
+    <div class="wrapper absolute z-2 top-0 w-full h-full flex 800:flex-col">
+      <div class="bg-[rgba(0,0,0,.3)] flex-1 max-w-[350px] hover:bg!-[rgba(0,0,0,.35)] transition-all 800:max-w-full 800:py-20">
         <GitProfile
           :data="profileData"
         />
       </div>
-      <div class="flex-1 bg-black p-20 text-white">
-        <div class="text-5xl font-bold mb-20 select-none">Repositories</div>
-        <div class="text-3xl font-bold font-['Poppins'] my-10 select-none">Personal</div>
+      <div class=" flex-1 bg-black p-20 text-white 1230:flex 1230:flex-col 1230:items-center">
+        <div class="title text-5xl font-bold mb-20 select-none 800:mb-10">Repositories</div>
+        <div class="title text-3xl font-bold font-['Poppins'] my-10 select-none">Personal</div>
         <reposList
           :data="reposData"
         />
         <a href="http://www.s1kebeats.store" target="_blank" rel="noopener noreferrer">
-          <div class="flex my-10 items-center gap-3">
+          <div class="title flex my-10 items-center gap-3 1230:items-center">
             <img src="@/assets/images/logo.svg" class="w-[34px] h-[34px] rounded-sm">
             <div class="text-3xl font-bold font-['Poppins']">s1kebeats</div>
           </div>
@@ -24,7 +24,7 @@
       </div>
     </div>
   <transition name="overlay">
-    <div v-show="loading" class="absolute z-5 top-0 left-0 w-full h-full bg-black flex text-white">Loading</div>
+    <div v-show="loading" class="absolute z-5 top-0 left-0 w-full h-full bg-black flex items-center justify-center text-white">Loading</div>
   </transition>
 </template>
 
@@ -103,6 +103,17 @@ onMounted(() => {
 //   background-image: linear-gradient(87deg, rgba(0,0,0,0) 0%, rgb(0, 0, 0,.98) 30%, rgba(0,0,0,.98) 10%);
 //   background-size: cover;
 // }
+
+@media screen and (max-width: 1230px) {
+    .title {
+        width: 350px;
+    }
+}
+@media screen and (max-width: 800px) {
+    .title {
+        width: 300px;
+    }
+}
 
 .overlay-enter-active,
 .overlay-leave-active {

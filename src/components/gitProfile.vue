@@ -16,7 +16,6 @@
 </template>
 
 <script setup>
-import { onBeforeMount, reactive, inject } from 'vue';
 const props = defineProps({
     data: Object,
 })
