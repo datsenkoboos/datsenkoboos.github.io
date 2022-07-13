@@ -17,6 +17,7 @@
           <div class="title flex my-10 items-center gap-3 1230:items-center">
             <img src="@/assets/images/logo.svg" class="w-[34px] h-[34px] rounded-sm">
             <div class="text-3xl font-bold font-['Poppins']">s1kebeats</div>
+            <img src="@/assets/images/arrow.svg" width="50px" class="svg ml-1">
           </div>
         </a>
         <reposList
@@ -36,6 +37,7 @@ import { onMounted, ref, reactive } from 'vue'
 import reposList from '@/components/reposList.vue'
 import GitProfile from '@/components/gitProfile.vue'
 
+// loading screen state
 const loading = ref(true)
 
 // type your github login right here
@@ -84,12 +86,14 @@ const profileUrl = ref(`https://api.github.com/users/${USER_LOGIN}`)
 const reposUrl = ref(`https://api.github.com/users/${USER_LOGIN}/repos`)
 
 onMounted(() => {
+  // fetch data
   Promise.all([
     fetch(reposUrl.value).then(response => response.json()).then(data => {Object.assign(reposData, data)}),
     fetch(profileUrl.value).then(response => response.json()).then(data => {Object.assign(profileData, data); document.title = profileData.name}),
     fetch(orgUrl.value).then(response => response.json()).then(data => {Object.assign(orgData, data)}),
   ]).then(() => setTimeout(() => loading.value = false, 250))
   
+  // draw gradient
   ctx.value = canvas.value.getContext('2d');
   animate()
 })
@@ -155,5 +159,9 @@ onMounted(() => {
 @keyframes spCircRot {
 	from { transform: rotate(0deg); }
 	to { transform: rotate(359deg); }
+}
+
+.svg {
+  transform: rotate(190deg) scale(1, -1);
 }
 </style>

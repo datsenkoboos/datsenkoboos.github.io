@@ -1,6 +1,6 @@
 <template>
     <a :href="data.html_url" target="_blank" rel="noopener noreferrer">
-        <div class="bg rounded-lg p-5 bg-[#141414] w-[350px] relative 800:w-[300px]">
+        <div class="bg rounded-lg p-5 bg-[#141414] w-[350px] relative 800:w-[300px] hover:brightness-90 transition-all">
             <div class="font-bold text-xl">{{ data.name }}</div>
             <div class="text-sm break-words">{{ data.description  ? data.description : 'No description' }}</div>
             <div :class="'absolute right-0 top-0 px-2 rounded-tr-lg rounded-bl-lg min-w-[50px] text-center shadow-md ' + data.language">{{ data.language }}</div>
@@ -9,11 +9,9 @@
 </template>
 
 <script setup>
-
 const props = defineProps({
     data: Object,
 })
-
 </script>
 
 <style lang="scss">
