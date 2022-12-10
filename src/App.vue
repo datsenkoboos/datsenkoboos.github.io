@@ -1,20 +1,20 @@
 <template>
-  <canvas ref="canvas" width="2" height="2" class="absolute top-0 left-0 w-full h-full"></canvas>
-    <div class="wrapper absolute z-2 top-0 w-full h-auto min-h-screen flex 800:flex-col">
-      <div class="bg-[rgba(0,0,0,.3)] flex-1 max-w-[350px] hover:bg!-[rgba(0,0,0,.35)] transition-all 800:max-w-full 800:py-20">
+  <canvas id="granim-canvas" class="fixed block top-0 right-0 bottom-0 left-0 w-full h-full"></canvas>
+    <div class="absolute z-2 top-0 w-full min-h-screen flex 880:flex-col">
+      <div class="w-[350px] h-screen fixed flex items-center justify-center 880:static 880:w-full 880:h-auto 880:py-10">
         <GitProfile
           :data="profileData"
         />
       </div>
-      <div class="repos flex-1 bg-black p-20 text-white 1230:flex 1230:flex-col 1230:items-center 800:px-0">
-        <div class="title text-5xl font-bold mb-20 select-none 800:mb-10">My repositories</div>
+      <div class="repos ml-[350px] flex-1 bg-black p-20 text-white 880:ml-0 880:px-5 880:py-10">
+        <div class="title text-5xl font-bold mb-20 select-none">My repositories</div>
         <div class="title text-3xl font-bold font-['Poppins'] my-10 select-none">Personal</div>
         <reposList
           :data="reposData"
           class="flowed"
         />
-        <a href="http://www.s1kebeats.store" title="Visit s1kebeats.store" target="_blank" rel="noopener noreferrer">
-          <div class="title flex my-10 items-center gap-3 1230:items-center">
+        <a href="http://www.s1kebeats.store" title="Visit s1kebeats.store" target="_blank">
+          <div class="title flex my-10 items-center gap-3">
             <img src="@/assets/images/logo.svg" class="w-[34px] h-[34px] rounded-sm">
             <div class="text-3xl font-bold font-['Poppins']">s1kebeats</div>
             <img src="@/assets/images/arrow.svg" width="50px" class="svg ml-1">
@@ -36,46 +36,12 @@
 import { onMounted, ref, reactive } from 'vue'
 import reposList from '@/components/reposList.vue'
 import GitProfile from '@/components/gitProfile.vue'
-
+import Granim from 'granim'
 // loading screen state
 const loading = ref(true)
 
 // type your github login right here
 const USER_LOGIN = 'datsenkoboos'
-
-const canvas = ref(null)
-const ctx = ref(null)
-
-class Pixel {
-  constructor( x, y ) {
-    this.x = x;
-    this.y = y;
-    this.hue = Math.floor( Math.random() * 360 );
-    let direction = Math.random() > 0.5 ? -1 : 1;
-    this.velocity = ( Math.random() * 30 + 20 ) * 0.01 * direction;
-  }
-  update() {
-    this.hue += this.velocity;
-  }
-  render(ctx) {
-    let hue = Math.round( this.hue );
-    ctx.fillStyle = 'hsl(' + hue + ', 100%, 50% )';
-    ctx.fillRect( this.x, this.y, 1, 1 );
-  }
-}
-let pixels = [
-  new Pixel( 0, 0 ),
-  new Pixel( 1, 0 ),
-  new Pixel( 0, 1 ),
-  new Pixel( 1, 1 ),
-];
-function animate() {
-  pixels.forEach( function( pixel ) {
-    pixel.update();
-    pixel.render( ctx.value );
-  });
-  requestAnimationFrame( animate );
-}
 
 const reposData = reactive({})
 const orgData = reactive({})
@@ -86,16 +52,29 @@ const profileUrl = ref(`https://api.github.com/users/${USER_LOGIN}`)
 const reposUrl = ref(`https://api.github.com/users/${USER_LOGIN}/repos`)
 
 onMounted(() => {
+  const granimInstance = new Granim({
+    element: '#granim-canvas',
+    direction: 'left-right',
+    isPausedWhenNotInView: true,
+    states : {
+        "default-state": {
+            gradients: [
+                ['#ff9966', '#ff5e62'],
+                ['#00F260', '#0575E6'],
+                ['#e1eec3', '#f05053']
+            ]
+        }
+    }
+  });
   // fetch data
   Promise.all([
     fetch(reposUrl.value).then(response => response.json()).then(data => {Object.assign(reposData, data)}),
     fetch(profileUrl.value).then(response => response.json()).then(data => {Object.assign(profileData, data); document.title = profileData.name}),
     fetch(orgUrl.value).then(response => response.json()).then(data => {Object.assign(orgData, data)}),
-  ]).then(() => setTimeout(() => loading.value = false, 250))
-  
-  // draw gradient
-  ctx.value = canvas.value.getContext('2d');
-  animate()
+  ]).then(() => setTimeout(() => {
+    document.querySelector('#favicon').href = profileData.avatar_url
+    loading.value = false
+  }, 250))
 })
 </script>
 
@@ -107,29 +86,29 @@ onMounted(() => {
   background-color: black;
 }
 
-@media screen and (max-width: 1230px) {
-    .title {
-        width: 350px;
-    }
-    .repos {
-      max-height: 100vh;
-    }
-    .flowed {
-      overflow-y: scroll;
-    }
-}
-@media screen and (max-width: 800px) {
-    .title {
-        width: 300px;
-    }
-    .repos {
-      padding: 0;
-      max-height: none;
-    }
-    .flowed {
-      height: 250px;
-    }
-}
+// @media screen and (max-width: 1230px) {
+//     .title {
+//         width: 350px;
+//     }
+//     .repos {
+//       max-height: 100vh;
+//     }
+//     .flowed {
+//       overflow-y: scroll;
+//     }
+// }
+// @media screen and (max-width: 800px) {
+//     .title {
+//         width: 300px;
+//     }
+//     .repos {
+//       padding: 0;
+//       max-height: none;
+//     }
+//     .flowed {
+//       height: 250px;
+//     }
+// }
 
 .overlay-enter-active,
 .overlay-leave-active {

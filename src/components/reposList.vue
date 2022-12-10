@@ -1,5 +1,5 @@
 <template>
-    <div class="list w-full flex gap-5 flex-wrap 800:w-[350px]">
+    <div class="list w-full flex gap-5 flex-wrap">
         <GitCard v-for="repo in data" :key="repo.id" :data="repo" />
     </div>
 </template>
